@@ -120,7 +120,7 @@ class _OTPVerificationViewState extends State<OTPVerificationView> {
                           DataApiCloudStore
                               .verifyOTP1(verificationCode,context)
                               .then((value) async => {
-                                    if (value  == true)
+                                    if (value)
                                       {
                                         if (await DataApiCloudStore
                                             .userExists())
