@@ -39,11 +39,11 @@ The app allows users to view other user's profiles. To implement this feature, y
 
 ### Send and Receive Images and Camera Taken Photos
 
-The app allows users to send and receive images and also send and receive images taken from the camera. To implement this feature, you can use Firebase Storage to store the images and the Firebase storage package in your Flutter code to upload and download the images.
+- The app allows users to send and receive images and also send and receive images taken from the camera. To implement this feature, you can use Firebase Storage to store the images and the Firebase storage package in your Flutter code to upload and download the images.
 
-You can add a new button to the chat screen that allows the user to select an image from their device or take a photo with the camera. Once the image is selected or taken, you can use the ImagePicker package to get the image file and upload it to Firebase Storage.
+- You can add a new button to the chat screen that allows the user to select an image from their device or take a photo with the camera. Once the image is selected or taken, you can use the ImagePicker package to get the image file and upload it to Firebase Storage.
 
-To receive images, you can listen to changes in the messages collection and download any image files that are sent as messages. You can then display the images in the chat screen.
+- To receive images, you can listen to changes in the messages collection and download any image files that are sent as messages. You can then display the images in the chat screen.
 
 ## Contributions
 
