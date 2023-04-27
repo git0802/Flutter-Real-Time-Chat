@@ -14,36 +14,34 @@ This is a Flutter chat app that allows users to send and receive messages, image
 - View other user's profile
 - Ability to send and receive images taken from the camera
 
-## Prerequisites
-
-- Flutter SDK
-- Firebase account
 
 ## Additional Features
 
 ### Active Status
 
-The app displays the active status of other users. To implement this feature, you can add a field to your user profiles collection that indicates the user's last active timestamp. You can then use Firebase Cloud Functions to update this field whenever a user opens or closes the app.
+- The app displays the active status of other users.
 
 ### Display Picture
 
-The app allows users to change their display picture. To implement this feature, you can use Firebase Storage to store user profile pictures. You can then use the Firebase storage package in your Flutter code to upload and download profile pictures.
+- User can set own Display Picture.
 
 ### Edit User Profile
 
-The app allows users to edit their user profiles. To implement this feature, you can use Cloud Firestore to store user profiles and the Firebase cloud_firestore package in your Flutter code to update user profile data.
+- The app allows users to edit their user profiles. 
+- Ex:- users to change their display picture, Name and About.
 
 ### View Other User's Profile
 
-The app allows users to view other user's profiles. To implement this feature, you can add a new screen to your app that displays the user's profile picture, name, and any other relevant information.
+- The app allows users to view other user's profiles.
 
 ### Send and Receive Images and Camera Taken Photos
 
-- The app allows users to send and receive images and also send and receive images taken from the camera. To implement this feature, you can use Firebase Storage to store the images and the Firebase storage package in your Flutter code to upload and download the images.
+- The app allows users to send and receive images and also send and receive images taken from the camera. 
 
-- You can add a new button to the chat screen that allows the user to select an image from their device or take a photo with the camera. Once the image is selected or taken, you can use the ImagePicker package to get the image file and upload it to Firebase Storage.
+### Notification
 
-- To receive images, you can listen to changes in the messages collection and download any image files that are sent as messages. You can then display the images in the chat screen.
+- When new message arrived then showing notification in user mobile.
+
 
 ## Contributions
 
