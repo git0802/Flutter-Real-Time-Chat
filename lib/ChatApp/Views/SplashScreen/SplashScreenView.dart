@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
+import '../../Controller/DataApi/DataApiCloudStore.dart';
+import '../ChatMainScreen/ChatMainScreenView.dart';
+
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({Key? key}) : super(key: key);
 
@@ -21,8 +24,16 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   }
 
   navigation(){
-    Future.delayed(const Duration(seconds: 4), () {
-      Get.to(WelcomeScreenView());
+    Future.delayed(const Duration(seconds: 3), () {
+
+      DataApiCloudStore.auth.authStateChanges().listen((event) {
+        if (event == null) {
+          Get.to(WelcomeScreenView());
+        } else {
+          Get.to(ChatMainScreenView());
+        }
+      });
+
     });
   }
 

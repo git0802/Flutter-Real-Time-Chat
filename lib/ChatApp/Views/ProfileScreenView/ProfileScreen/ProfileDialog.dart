@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Models/ChatUserData.dart';
+import '../../../Models/ChatUserData.dart';
+import '../../ImageView/ImageView.dart';
 import '../ViewProfileScreen/ViewProfileScreen.dart';
 
 class ProfileDialog extends StatelessWidget {
@@ -25,13 +26,16 @@ class ProfileDialog extends StatelessWidget {
                 child: Positioned(
                   top: Get.height * .075,
                   left: Get.width * .1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Get.height * .1),
-                    child: Image.network(
-                      user.image,
-                      width: Get.height * .2,
-                      height: Get.height * .2,
-                      fit: BoxFit.cover,
+                  child: InkWell(
+                    onTap: ()=> Get.to(() => ImageView(ImagePath: user.image,)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(Get.height * .1),
+                      child: Image.network(
+                        user.image,
+                        width: Get.height * .2,
+                        height: Get.height * .2,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

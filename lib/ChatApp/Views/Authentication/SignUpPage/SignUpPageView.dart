@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../Controller/Authentication/SignUpController.dart';
-import '../../../Utils/RouteName.dart';
 import '../../../Utils/TextStyleConstant.dart';
 import 'SignUpPageTextFiledButton.dart';
 

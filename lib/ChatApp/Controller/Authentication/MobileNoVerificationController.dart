@@ -22,7 +22,4 @@ class MobileNoVerificationController extends GetxController{
     }
     return results;
   }
-  void phoneVerification(){
-    AuthenticationRepository1.phoneAuthnetication('+91${phoneNumber.text.trim()}');
-  }
 }

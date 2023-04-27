@@ -5,12 +5,14 @@ import 'package:chat_me/ChatApp/Views/ChatMessageScreen/ChatMessageScreenView.da
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Controller/DataApi/DataApiCloudStore.dart';
-import '../ProfileScreen/ProfileDialog.dart';
+import '../../../Controller/DataApi/DataApiCloudStore.dart';
+import '../../ProfileScreenView/ProfileScreen/ProfileDialog.dart';
 
 class ChatCard extends StatefulWidget {
-  const ChatCard({Key? key, required this.user}) : super(key: key);
+  const ChatCard({Key? key, required this.user, required this.isSelected})
+      : super(key: key);
   final ChatUser user;
+  final bool isSelected;
 
   @override
   State<ChatCard> createState() => _ChatCardState();
@@ -22,7 +24,7 @@ class _ChatCardState extends State<ChatCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white70,
+      color: widget.isSelected ? Colors.white10.withOpacity(0.1) : Colors.white,
       child: InkWell(
           onTap: () {
             //for navigating to chat screen
@@ -43,42 +45,19 @@ class _ChatCardState extends State<ChatCard> {
 
               return ListTile(
                   //user profile picture
-                  leading: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) => ProfileDialog(user: widget.user));
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(Get.height * .03),
-                      child: Image(
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                              child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!.toInt()
-                                : null,
-                          ));
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return const SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Icon(
-                              Icons.error,
-                              color: Colors.red,
-                            ),
-                          );
-                        },
-                        image: NetworkImage(
-                          widget.user.image,
-                        ),
-                        width: Get.height * .055,
-                        height: Get.height * .055,
+                  leading: Container(
+                    height: 60,
+                    width: 60,
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) => ProfileDialog(user: widget.user));
+                      },
+                      child: CircleAvatar(
+                        radius: Get.height * .0275,
+                        backgroundImage: NetworkImage(widget.user.image),
+                        backgroundColor: Colors.grey[200],
                       ),
                     ),
                   ),

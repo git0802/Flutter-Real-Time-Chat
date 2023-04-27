@@ -7,8 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart';
 import '../../Models/ChatUserData.dart';
+import '../../Utils/NotificationService/NotiicationService.dart';
 
 class DataApiCloudStore {
   static FirebaseAuth auth = FirebaseAuth.instance;
@@ -20,6 +23,8 @@ class DataApiCloudStore {
   static FirebaseMessaging FirebaseMessaging1 = FirebaseMessaging.instance;
 
   static User get user => auth.currentUser!;
+
+  static String verificationId1 = '';
 
   static ChatUser me = ChatUser(
       image: '',
@@ -41,21 +46,76 @@ class DataApiCloudStore {
         .exists;
   }
 
+  static Future<void> phoneAuthnetication(String phoneNo) async {
+    log(phoneNo);
+    log('phoneAuthentication');
+    try {
+      await auth.verifyPhoneNumber(
+          phoneNumber: phoneNo,
+          verificationCompleted: (credential) async {
+            await auth.signInWithCredential(credential);
+          },
+          timeout: Duration(seconds: 10),
+          verificationFailed: (FirebaseAuthException e) {
+            log(e.message.toString());
+            if (e.code == 'Invalid-Phone-Number') {
+              Get.snackbar("Error", "The Provided phone number is not valid",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  colorText: Colors.green);
+            } else {
+              Get.snackbar("Error", "Something is Wrong...! Please Try again",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  colorText: Colors.green);
+            }
+          },
+          codeSent: (verificationId, resendToken) async {
+            verificationId1 = verificationId;
+          },
+          codeAutoRetrievalTimeout: (verificationId) {
+            verificationId1 = verificationId;
+          });
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  static Future<bool> verifyOTP1(String otp, BuildContext context) async {
+    log(otp);
+    try {
+      var credentials = await auth.signInWithCredential(
+          PhoneAuthProvider.credential(
+              verificationId: verificationId1, smsCode: otp));
+      return credentials.user != null ? true : false;
+    } on FirebaseAuthException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text(
+              'Oops, OTP is not matched.\nPlease Retry or ReEnter Your Number'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+      return false;
+    }
+  }
+
   //firebase fcm token
   static Future<void> getFirebaseMessagingToken() async {
     await FirebaseMessaging1.requestPermission();
     await FirebaseMessaging1.getToken().then((value) => {
           if (value != null) {me.pushToken = value, log(value)}
         });
-
-/*    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
-    });*/
   }
 
   //send Notification API
@@ -112,14 +172,16 @@ class DataApiCloudStore {
     if (userIds.isNotEmpty) {
       return DataApiCloudStore.fireStore
           .collection('users')
-          .where('id', whereIn: userIds)
+          .where(
+            'id',
+            whereIn: userIds,
+          )
           .snapshots();
     } else {
       return DataApiCloudStore.fireStore
           .collection('users')
           .where('id', isEqualTo: '123')
           .snapshots();
-      ;
     }
   }
 
@@ -144,11 +206,15 @@ class DataApiCloudStore {
 
   //get self Data from firebase
   static Future<void> getSelfInfo() async {
+    user.reload();
+    log(user.phoneNumber.toString());
+    me.clear();
     await fireStore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);
         getFirebaseMessagingToken();
-        log(me.toString());
+        LocalNotificationService.initialize();
+        log(me.phoneNo.toString());
       } else {
         await createUser().then((value) => getSelfInfo());
       }
@@ -157,18 +223,22 @@ class DataApiCloudStore {
 
   //Starting Page GetSelfInfo()
 
-  // static ChatUser GetSelfInfo()  {
-  //    fireStore.collection('users').doc(user.uid).get().then((value) {
-  //     if(value.exists){
-  //       me = ChatUser.fromJson(value.data()!);
-  //       return me;
-  //     }
-  //     else{
-  //       return me;
-  //     }
-  //   });
-  //    return me;
-  // }
+  static ChatUser GetSelfInfo() {
+    log(user.phoneNumber.toString());
+
+    fireStore.collection('users').doc(user.uid).get().then((value) {
+      log(value.data().toString());
+      print(value.exists);
+      if (value.exists) {
+        me = ChatUser.fromJson(value.data()!);
+        return me;
+      } else {
+        return me;
+      }
+    });
+    return me;
+  }
+
   //update Data
   static Future<void> updateUseInfo() async {
     await fireStore
@@ -198,6 +268,11 @@ class DataApiCloudStore {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
       ChatUser chatUser) {
+    log(fireStore
+        .collection('users')
+        .where('id', isNotEqualTo: chatUser.id)
+        .snapshots()
+        .toString());
     return fireStore
         .collection('users')
         .where('id', isNotEqualTo: chatUser.id)
@@ -210,6 +285,14 @@ class DataApiCloudStore {
       'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
       'push_token': me.pushToken,
     });
+  }
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> userStatusStream(
+      String userId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots();
   }
 
   //delete message
@@ -269,11 +352,15 @@ class DataApiCloudStore {
 
   static Future<void> updateMessageReadStatus(
       ChatMessageModel chatMessageModel) async {
-    /*  fireStore
-        .collection(
-            'chat/${getConversionId(chatMessageModel.fromId)}/messages/')
-        .doc(chatMessageModel.send)
-        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});*/
+    try {
+      fireStore
+          .collection(
+              'chat/${getConversionId(chatMessageModel.fromId)}/messages/')
+          .doc(chatMessageModel.send)
+          .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+    } catch (e) {
+      print('Error updating read status: $e');
+    }
   }
 
   //getLastMessage
@@ -304,9 +391,10 @@ class DataApiCloudStore {
   }
 
   static Future<bool> addChatUser(String phoneNo) async {
+    print('+91${phoneNo}');
     final userData = await fireStore
         .collection('users')
-        .where('phoneNo', isEqualTo: phoneNo)
+        .where('phoneNo', isEqualTo: '+91${phoneNo}')
         .get();
 
     if (userData.docs.isNotEmpty && userData.docs.first.id != user.uid) {
@@ -320,5 +408,34 @@ class DataApiCloudStore {
     } else {
       return false;
     }
+  }
+
+  //Clear Chat
+  static Future<void> clearChat(ChatUser chatUser) async {
+    CollectionReference messagesCollection = FirebaseFirestore.instance
+        .collection('chat/${getConversionId(chatUser.id)}/messages/');
+
+    QuerySnapshot querySnapshot = await messagesCollection.get();
+
+    for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      await documentSnapshot.reference.delete();
+    }
+  }
+
+  static Future<void> deleteUser(String phoneNo) async {
+    final userData = await fireStore
+        .collection('users')
+        .where('phoneNo', isEqualTo: phoneNo)
+        .get();
+
+    if (userData.docs.isNotEmpty || userData != user.uid) {
+      fireStore
+          .collection('users')
+          .doc(user.uid)
+          .collection('myUser')
+          .doc(userData.docs.first.id)
+          .delete();
+      print('delete');
+    } else {}
   }
 }

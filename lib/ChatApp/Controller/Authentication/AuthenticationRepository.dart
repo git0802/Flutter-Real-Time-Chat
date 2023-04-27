@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationRepository extends GetxController {
-  final _auth = FirebaseAuth.instance;
+  final auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
   var verificationId1 = ''.obs;
 
@@ -18,59 +18,15 @@ class AuthenticationRepository extends GetxController {
     // TODO: implement onReady
     super.onReady();
     Firebase.initializeApp();
-    firebaseUser = Rx<User?>(_auth.currentUser);
-    firebaseUser.bindStream(_auth.userChanges());
-    ever(firebaseUser, (callback) => _setInitialScreen);
+    verificationId1 = ''.obs;
+
+  //  firebaseUser = Rx<User?>(_auth.currentUser);
+  //  firebaseUser.bindStream(_auth.userChanges());
+    //ever(firebaseUser, (callback) => _setInitialScreen);
   }
 
   _setInitialScreen(User? user) {
-    user == null
-        ? Get.off(LoginPageView())
-        : Get.off(ChatMainScreenView());
-  }
-
-  Future<void> phoneAuthnetication(String phoneNo) async {
-    log(phoneNo);
-
-    try {
-        await _auth.verifyPhoneNumber(
-            phoneNumber: phoneNo,
-            verificationCompleted: (credential) async {
-              await _auth.signInWithCredential(credential);
-            },
-            timeout: Duration(seconds: 20),
-            verificationFailed: (FirebaseAuthException e) {
-              log(e.message.toString());
-              if (e.code == 'Invalid-Phone-Number') {
-                Get.snackbar("Error", "The Provided phone number is not valid",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green.withOpacity(0.1),
-                    colorText: Colors.green);
-              } else {
-                Get.snackbar("Error", "Something is Wrong...! Please Try again",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.green.withOpacity(0.1),
-                    colorText: Colors.green);
-              }
-            },
-            codeSent: (verificationId, resendToken) async {
-              this.verificationId1.value = verificationId;
-            },
-            codeAutoRetrievalTimeout: (verificationId) {
-              this.verificationId1.value = verificationId;
-            });
-
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<bool> verifyOTP1(String otp) async {
-    log(otp);
-    var credentials = await _auth.signInWithCredential(
-        PhoneAuthProvider.credential(
-            verificationId: this.verificationId1.value, smsCode: otp));
-    return credentials.user != null ? true : false;
+    user == null ? Get.off(LoginPageView()) : Get.off(ChatMainScreenView());
   }
 
   verifyOtp(String otpNumber) async {
@@ -99,7 +55,7 @@ class AuthenticationRepository extends GetxController {
   Future<void> createUserWithEmailAndPassword(
       String email, String Password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      await auth.createUserWithEmailAndPassword(
           email: email, password: Password);
       firebaseUser.value != null
           ? Get.off(LoginPageView())
@@ -117,12 +73,12 @@ class AuthenticationRepository extends GetxController {
   Future<void> loginUserWithEmailAndPassword(
       String email, String Password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: Password);
+      await auth.signInWithEmailAndPassword(email: email, password: Password);
     } on FirebaseAuthException catch (e) {
     } catch (e) {}
   }
 
   Future<void> logout() async {
-    await _auth.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 }

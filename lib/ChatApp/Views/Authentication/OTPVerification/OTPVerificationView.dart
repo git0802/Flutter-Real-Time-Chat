@@ -8,31 +8,37 @@ import 'package:get/get.dart';
 
 import '../../../Controller/Authentication/AuthenticationRepository.dart';
 import '../../../Controller/Authentication/MobileNoVerificationController.dart';
-import '../../../Utils/RouteName.dart';
 import '../../../Utils/TextStyleConstant.dart';
-import '../../ChatMessageScreen/ChatMessageScreenView.dart';
 import '../../NamePhotoAddScreen/NamePhotoAddScreen.dart';
 
 class OTPVerificationView extends StatefulWidget {
-  const OTPVerificationView({Key? key}) : super(key: key);
+  const OTPVerificationView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<OTPVerificationView> createState() => _OTPVerificationViewState();
 }
 
 class _OTPVerificationViewState extends State<OTPVerificationView> {
+  String verificationCode = '';
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
-    DataApiCloudStore.getSelfInfo();
-   // DataApiCloudStore.GetSelfInfo();
-    DataApiCloudStore.me;
+    selfInfo();
+    verificationCode = '';
   }
+
+  selfInfo() async{
+    DataApiCloudStore.GetSelfInfo();
+    DataApiCloudStore.getSelfInfo();
+  }
+
   final mobileNoVerificationController =
-  Get.put(MobileNoVerificationController());
+      Get.put(MobileNoVerificationController());
   final verificationController = Get.put(AuthenticationRepository());
-  String verificationCode = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,88 +53,126 @@ class _OTPVerificationViewState extends State<OTPVerificationView> {
                   width: Get.width,
                   color: Colors.indigo,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                       height: Get.height/10
+                      SizedBox(height: Get.height / 10),
+                      CircleAvatar(
+                        child: Image.asset(
+                          'Assets/otp.png',
+                          color: Colors.black,
+                        ),
+                        backgroundColor: Colors.white,
+                        radius: Get.height / 15,
                       ),
-                      CircleAvatar(child: Image.asset('Assets/otp.png',color: Colors.black,),backgroundColor: Colors.white,radius: Get.height/15,),
-                      SizedBox(height: Get.height/30,),
-                      Text("Verify Your Mobile Number!",style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 22,
-                      )),
-                      SizedBox(height: Get.height/10,),
+                      SizedBox(
+                        height: Get.height / 30,
+                      ),
+                      Text("Verify Your Mobile Number!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 22,
+                          )),
+                      SizedBox(
+                        height: Get.height / 10,
+                      ),
                     ],
                   ),
                 ),
               )),
-          Expanded(flex: 6, child: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: [
-                  SizedBox(height: Get.height/30,),
-                  Text("We have send an OTP on your mobile Number "),
-                  SizedBox(height: Get.height/30,),
-                  OtpTextField(
-                    numberOfFields: 6,
-                      fieldWidth : 50,
-                      margin : EdgeInsets.only(right: 12),
-                    borderColor: const Color(0xFF512DA8),
-                    showFieldAsBox: true,
-                    onCodeChanged: (String code) {
-                      verificationCode = code;
+          Expanded(
+              flex: 6,
+              child: SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: Get.height / 30,
+                      ),
+                      Text("We have send an OTP on your mobile Number "),
+                      SizedBox(
+                        height: Get.height / 100,
+                      ),
+                      SizedBox(
+                        height: Get.height / 30,
+                      ),
+                      OtpTextField(
+                        numberOfFields: 6,
+                        fieldWidth: 50,
+                        margin: EdgeInsets.only(right: 12),
+                        borderColor: const Color(0xFF512DA8),
+                        showFieldAsBox: true,
+                        onCodeChanged: (String code) {
+                          verificationCode = code;
+                        },
+                        onSubmit: (String code) {
+                          verificationCode = code;
+                          log(verificationCode);
+                          // moveToHome(context);
+                        }, // end onSubmit
+                      ),
+                      SizedBox(
+                        height: Get.height / 20,
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          DataApiCloudStore
+                              .verifyOTP1(verificationCode,context)
+                              .then((value) async => {
+                                    if (value  == true)
+                                      {
+                                        if (await DataApiCloudStore
+                                            .userExists())
+                                          {
 
-                    },
-                    onSubmit: (String code) {
-                      verificationCode = code;
-                      log(verificationCode);
-                      // moveToHome(context);
-                    }, // end onSubmit
+                                          Get.to(NamePhotoAddScreen(
+                                            )),
+                                          }
+                                        else
+                                          {
+                                            await DataApiCloudStore.createUser()
+                                                .then(
+                                              (value) =>
+                                                  Get.to(NamePhotoAddScreen(
+                                              )),
+                                            )
+                                          }
+                                      }
+                                    else
+                                      {
+
+                                      }
+                                  });
+                        },
+                        child: Container(
+                            width: Get.width / 3,
+                            height: Get.height / 18,
+                            decoration: BoxDecoration(
+                                color: Colors.indigo,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Center(
+                                child: Text("VERIFY",
+                                    style: TextStyleConstant.ButtonColor))),
+                      ),
+                      SizedBox(
+                        height: Get.height / 10,
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Get.to(ChatMainScreenView());
+                          },
+                          child: Text(
+                            "Resend OTP",
+                            style: TextStyle(
+                                color: Colors.indigo,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ))
+                    ],
                   ),
-                  SizedBox(height: Get.height/20,),
-
-                  GestureDetector(
-                    onTap: () async{
-                      verificationController.verifyOTP1(verificationCode).then((value)  async => {
-                        if(value){
-                   //
-                          if( await DataApiCloudStore.userExists()){
-                            Get.to(NamePhotoAddScreen(user: DataApiCloudStore.me,)),
-                           // Get.offNamed(RouteName.ChatMainScreenView),
-                          }
-                          else{
-                            await DataApiCloudStore.createUser().then((value) =>
-                                Get.to(NamePhotoAddScreen(user: DataApiCloudStore.me,)),
-
-                            )
-                          }
-                        }
-                      });
-
-                    },
-                    child: Container(
-                        width: Get.width / 3,
-                        height: Get.height / 18,
-                        decoration: BoxDecoration(
-                            color: Colors.indigo,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Center(
-                            child: Text("VERIFY", style: TextStyleConstant.ButtonColor))),
-                  ),
-                  SizedBox(height: Get.height/10,),
-                  TextButton(onPressed: (){
-                    Get.to(ChatMainScreenView());
-                  }, child: Text("Resend OTP",style: TextStyle(
-                    color: Colors.indigo,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold
-                  ),))
-                ],
-              ),
-            ),
-          ))
+                ),
+              ))
         ],
       ),
     );

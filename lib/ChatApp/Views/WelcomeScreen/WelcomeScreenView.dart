@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../Controller/DataApi/DataApiCloudStore.dart';
 import '../Authentication/MobileNoScreen/MobileNoScreenView.dart';
 
 class WelcomeScreenView extends StatefulWidget {
@@ -10,6 +11,14 @@ class WelcomeScreenView extends StatefulWidget {
 }
 
 class _WelcomeScreenViewState extends State<WelcomeScreenView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    DataApiCloudStore.auth;
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

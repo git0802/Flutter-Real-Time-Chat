@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:chat_me/ChatApp/Models/ChatMessageModel.dart';
 import 'package:chat_me/ChatApp/Utils/my_date_util.dart';
 import 'package:chat_me/ChatApp/Views/ChatMessageScreen/components/MessageCard.dart';
-import 'package:chat_me/ChatApp/Views/ViewProfileScreen/ViewProfileScreen.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../Controller/DataApi/DataApiCloudStore.dart';
 import '../../Models/ChatUserData.dart';
+import '../ProfileScreenView/ViewProfileScreen/ViewProfileScreen.dart';
 
 class ChatMessageScreenView extends StatefulWidget {
   final ChatUser user;
@@ -46,6 +46,35 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
             appBar: AppBar(
               automaticallyImplyLeading: false,
               flexibleSpace: _appBar(),
+              actions: [
+                //list if widget in appbar actions
+                PopupMenuButton(
+                  icon: Icon(Icons
+                      .more_vert), //don't specify icon if you want 3 dot menu
+                  color: Colors.white,
+                  itemBuilder: (context) => [
+                    PopupMenuItem<int>(
+                      value: 0,
+                      onTap: () {
+                        DataApiCloudStore.clearChat(widget.user);
+                      },
+                      child: Text(
+                        "Clear Chat",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      onTap: () {},
+                      child: Text(
+                        "View Profile",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ],
+                  onSelected: (item) => {print(item)},
+                ),
+              ],
             ),
             body: Column(
               children: [
@@ -137,15 +166,10 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                   builder: (_) => ViewProfileScreen(
                         user: widget.user,
                       )));
-          //  Get.to(() => ProfileScreenView(user: widget.user));
         },
         child: StreamBuilder(
           stream: DataApiCloudStore.getUserInfo(widget.user),
           builder: (context, snapshot) {
-            final data = snapshot.data?.docs;
-            final list =
-                data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
-            log(list[0].lastActive);
             return Row(
               children: [
                 IconButton(
@@ -182,7 +206,7 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                       );
                     },
                     image: NetworkImage(
-                      list.isNotEmpty ? list[0].image : widget.user.image,
+                      widget.user.image,
                     ),
                     width: Get.height * .055,
                     height: Get.height * .055,
@@ -205,18 +229,28 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                     SizedBox(
                       height: 2,
                     ),
-                    Text(
-                      list.isNotEmpty
-                          ? list[0].isOnline
+                    StreamBuilder(
+                        stream:
+                            DataApiCloudStore.userStatusStream(widget.user.id),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            // Handle error
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {}
+                          bool isOnline =
+                              snapshot.data?.get('is_online') ?? false;
+                          String status = isOnline
                               ? 'Online'
                               : myDateUtil.getLastActiveTime(
                                   context: context,
-                                  lastActive: list[0].lastActive)
-                          : myDateUtil.getLastActiveTime(
-                              context: context,
-                              lastActive: widget.user.lastActive),
-                      style: TextStyle(fontSize: 13, color: Colors.white70),
-                    ),
+                                  lastActive: widget.user.lastActive);
+                          return Text(
+                            status,
+                            style:
+                                TextStyle(fontSize: 13, color: Colors.white70),
+                          );
+                        })
                   ],
                 )
               ],
@@ -327,7 +361,7 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                 if (messageSend.text.isNotEmpty) {
                   if (messageList.isEmpty) {
                     DataApiCloudStore.sendFirstMessage(
-                        widget.user,  messageSend.text, Type.text);
+                        widget.user, messageSend.text, Type.text);
                   } else {
                     DataApiCloudStore.sendMessage(
                         widget.user, messageSend.text, Type.text);

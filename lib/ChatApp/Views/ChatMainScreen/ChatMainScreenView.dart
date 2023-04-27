@@ -1,13 +1,18 @@
 import 'dart:developer';
-import 'package:chat_me/ChatApp/Views/ChatMainScreen/ChatCard.dart';
-import 'package:chat_me/ChatApp/Views/ProfileScreen/ProfileScreenView.dart';
+import 'package:chat_me/ChatApp/Views/ChatMainScreen/Components/ChatCard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
+import '../../Controller/Authentication/AuthenticationRepository.dart';
 import '../../Controller/DataApi/DataApiCloudStore.dart';
 import '../../Models/ChatUserData.dart';
 import '../../Utils/ColorConstant.dart';
+import '../ProfileScreenView/ProfileScreen/ProfileScreenView.dart';
+import '../WelcomeScreen/WelcomeScreenView.dart';
+import 'Components/addChatUser.dart';
 
 class ChatMainScreenView extends StatefulWidget {
   const ChatMainScreenView({Key? key}) : super(key: key);
@@ -20,6 +25,11 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
   List<ChatUser> userList = [];
   List<ChatUser> searchList = [];
   bool isSearch = false;
+  final AuthenticationRepository1 = Get.put(AuthenticationRepository());
+  Set<int> selectedIndexes = {};
+  Set<String> selectedPhone = {};
+
+  bool isSelected = false;
 
   @override
   void initState() {
@@ -58,59 +68,130 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
           }
         },
         child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            centerTitle: false,
-            title: isSearch
-                ? TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Name,Phone Number",
-                      hintStyle: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          letterSpacing: 0.5),
+          appBar: !isSelected
+              ? AppBar(
+                  automaticallyImplyLeading: false,
+                  centerTitle: false,
+                  title: isSearch
+                      ? TextField(
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Name,Phone Number",
+                            hintStyle: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                letterSpacing: 0.5),
+                          ),
+                          autofocus: true,
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              letterSpacing: 0.5),
+                          onChanged: (val) {
+                            searchList.clear();
+                            for (var i in userList) {
+                              if (i.name.toLowerCase().contains(val) ||
+                                  i.phoneNo.toLowerCase().contains(val)) {
+                                searchList.add(i);
+                              }
+                              setState(() {
+                                searchList;
+                              });
+                            }
+                          },
+                        )
+                      : Text("Chats"),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isSearch = !isSearch;
+                          });
+                        },
+                        icon: Icon(
+                          isSearch
+                              ? CupertinoIcons.clear_circled_solid
+                              : CupertinoIcons.search,
+                          color: kContentColorDarkTheme,
+                        )),
+                    PopupMenuButton(
+                      icon: Icon(Icons
+                          .more_vert), //don't specify icon if you want 3 dot menu
+                      color: Colors.white,
+                      itemBuilder: (context) => [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.person_crop_circle_fill,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: Get.width * 0.01,
+                              ),
+                              Text(
+                                "Account Setting",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.logout,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: Get.width * 0.01,
+                              ),
+                              Text(
+                                "Log out",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      onSelected: (item) => SelectedItem(context, item),
                     ),
-                    autofocus: true,
-                    style: TextStyle(
-                        fontSize: 16, color: Colors.white, letterSpacing: 0.5),
-                    onChanged: (val) {
-                      searchList.clear();
-                      for (var i in userList) {
-                        if (i.name.toLowerCase().contains(val) ||
-                            i.phoneNo.toLowerCase().contains(val)) {
-                          searchList.add(i);
-                        }
-                        setState(() {
-                          searchList;
-                        });
-                      }
-                    },
-                  )
-                : Text("Chats"),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isSearch = !isSearch;
-                    });
-                  },
-                  icon: Icon(
-                    isSearch
-                        ? CupertinoIcons.clear_circled_solid
-                        : CupertinoIcons.search,
-                    color: kContentColorDarkTheme,
-                  )),
-              IconButton(
-                  onPressed: () {
-                    Get.to(ProfileScreenView(user: DataApiCloudStore.me));
-                  },
-                  icon: Icon(
-                    CupertinoIcons.person_crop_circle_fill,
-                    color: kContentColorDarkTheme,
-                  ))
-            ],
-          ),
+                  ],
+                )
+              : AppBar(
+                  automaticallyImplyLeading: false,
+                  centerTitle: false,
+                  title: Text("Chats"),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isSearch = !isSearch;
+                          });
+                        },
+                        icon: Icon(
+                          isSearch
+                              ? CupertinoIcons.clear_circled_solid
+                              : CupertinoIcons.search,
+                          color: kContentColorDarkTheme,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          DataApiCloudStore.deleteUser(selectedPhone.first);
+                          print(selectedPhone.first);
+                          selectedIndexes.clear();
+                          setState(() {
+                            isSelected = !isSelected;
+                          });
+                        },
+                        icon: Icon(
+                          CupertinoIcons.delete,
+                          color: kContentColorDarkTheme,
+                        )),
+                  ],
+                ),
           body: StreamBuilder(
             stream: DataApiCloudStore.getMyUserId(),
 
@@ -151,18 +232,49 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                               [];
 
                           if (userList.isNotEmpty) {
-                            return ListView.builder(
-                                itemCount: isSearch
-                                    ? searchList.length
-                                    : userList.length,
-                                padding: EdgeInsets.only(top: Get.height * .01),
-                                physics: const BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  return ChatCard(
+                            return ListView.separated(
+                              padding: EdgeInsets.zero,
+
+                              itemCount: isSearch
+                                  ? searchList.length
+                                  : userList.length,
+                              // padding: EdgeInsets.only(top: Get.height * .01),
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onLongPress: () {
+                                    setState(() {
+                                      if (selectedIndexes.contains(index)) {
+                                        selectedIndexes.remove(index);
+                                        selectedPhone
+                                            .remove(userList[index].phoneNo);
+                                      } else {
+                                        selectedIndexes.add(index);
+                                        selectedPhone
+                                            .add(userList[index].phoneNo);
+                                      }
+                                      if (selectedIndexes.length != 1) {
+                                        isSelected = false;
+                                      } else {
+                                        isSelected = true;
+                                      }
+                                    });
+                                  },
+                                  child: ChatCard(
                                       user: isSearch
                                           ? searchList[index]
-                                          : userList[index]);
-                                });
+                                          : userList[index],
+                                      isSelected:
+                                          selectedIndexes.contains(index)),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return SizedBox(
+                                  height: 0,
+                                );
+                              },
+                            );
                           } else {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -180,22 +292,7 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                                 SizedBox(
                                   height: 3,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    addChatUser();
-                                  },
-                                  child: Center(
-                                    child: CircleAvatar(
-                                        radius: 25,
-                                        child: Image.network(
-                                          'https://fontawesomeicons.com/images/png/black/add_comment/outline-4x.png',
-                                          height: 30,
-                                          width: 30,
-                                          color: Colors.white,
-                                        ),
-                                        backgroundColor: Color(0xFF00BF6D)),
-                                  ),
-                                ),
+                                addChatUser(),
                                 SizedBox(
                                   height: 3,
                                 ),
@@ -218,95 +315,38 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
             },
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              addChatUser();
-            },
-            backgroundColor: kPrimaryColor,
-            child: Icon(
-              Icons.add_comment_rounded,
-              color: Colors.white,
-            ),
+            onPressed: () {},
+            backgroundColor: Colors.indigo,
+            child: addChatUser(),
           ),
-          //bottomNavigationBar: buildBottomNavigationBar(),
         ),
       ),
     );
   }
 
-  void addChatUser() {
-    String phone = '';
+  void SelectedItem(BuildContext context, item) async {
+    switch (item) {
+      case 0:
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ProfileScreenView(user: DataApiCloudStore.me)));
 
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              contentPadding: const EdgeInsets.only(
-                  left: 24, right: 24, top: 20, bottom: 10),
+        break;
+      case 1:
+        DataApiCloudStore.updateActiveStatus(false);
 
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+        showDialog(
+            context: context,
+            builder: (_) => Center(
+                  child: CircularProgressIndicator(),
+                ));
 
-              //title
-              title: Row(
-                children: const [
-                  Icon(
-                    Icons.person_add,
-                    color: Colors.blue,
-                    size: 28,
-                  ),
-                  Text('   Add User')
-                ],
-              ),
-
-              //content
-              content: TextFormField(
-                maxLines: null,
-                onChanged: (value) => phone = value,
-                decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.phone,
-                      color: Colors.blue,
-                    ),
-                    hintText: "Ex:-+919988774455     ",
-                    labelText: 'Enter User Mobile Number',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15))),
-              ),
-
-              //actions
-              actions: [
-                //cancel button
-                MaterialButton(
-                    onPressed: () {
-                      //hide alert dialog
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
-                    )),
-
-                //update button
-                MaterialButton(
-                    onPressed: () async {
-                      //hide alert dialog
-                      Navigator.pop(context);
-                      if (phone.isNotEmpty) {
-                        await DataApiCloudStore.addChatUser(phone)
-                            .then((value) {
-                          if (!value) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("User Does not exist..!!"),
-                                backgroundColor: Colors.blue.withOpacity(.8),
-                                behavior: SnackBarBehavior.floating));
-                          }
-                        });
-                      }
-                    },
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
-                    ))
-              ],
-            ));
+        DataApiCloudStore.auth.signOut().then((value) async {
+          DataApiCloudStore.auth = FirebaseAuth.instance;
+          await DefaultCacheManager().emptyCache();
+          Get.back();
+          Get.off(WelcomeScreenView());
+        });
+        break;
+    }
   }
 }

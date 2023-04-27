@@ -2,8 +2,6 @@ import 'package:chat_me/ChatApp/Views/Authentication/SignUpPage/SignUpPageView.d
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../Utils/RouteName.dart';
 import '../../../Utils/TextStyleConstant.dart';
 import 'LoginPageTextFiledButton.dart';
 

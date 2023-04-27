@@ -10,8 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../Controller/Authentication/AuthenticationRepository.dart';
-import '../../Utils/TextStyleConstant.dart';
+import '../../../Controller/Authentication/AuthenticationRepository.dart';
+import '../../../Utils/TextStyleConstant.dart';
+
 
 class ProfileScreenView extends StatefulWidget {
   const ProfileScreenView({Key? key, required this.user}) : super(key: key);
@@ -65,19 +66,13 @@ class _ProfileScreenViewState extends State<ProfileScreenView> {
                                 width: Get.height * .2,
                                 height: Get.height * .2,
                                 fit: BoxFit.cover,
-                              ), /*CachedNetworkImage(
-
-                          imageUrl: widget.user.image,
-                          errorWidget: (context, url, error) =>
-                          const CircleAvatar(
-                              child: Icon(CupertinoIcons.person)),
-                        ),*/
+                              ),
                             )
                           : ClipRRect(
                               borderRadius:
                                   BorderRadius.circular(Get.height * .1),
                               child: Image.network(
-                             widget.user.image,
+                                widget.user.image,
                                 width: Get.height * .2,
                                 height: Get.height * .2,
                                 fit: BoxFit.cover,
@@ -223,7 +218,8 @@ class _ProfileScreenViewState extends State<ProfileScreenView> {
                           setState(() {
                             customImage = image.path;
                           });
-                          DataApiCloudStore.updateProfilePicture(File(customImage!));
+                          DataApiCloudStore.updateProfilePicture(
+                              File(customImage!));
                         }
                         Get.back();
                       },
@@ -236,13 +232,14 @@ class _ProfileScreenViewState extends State<ProfileScreenView> {
                       onPressed: () async {
                         final ImagePicker picker = ImagePicker();
                         final XFile? image =
-                        await picker.pickImage(source: ImageSource.camera);
+                            await picker.pickImage(source: ImageSource.camera);
                         if (image != null) {
                           log("Image Path ${image.path}");
                           setState(() {
                             customImage = image.path;
                           });
-                          DataApiCloudStore.updateProfilePicture(File(customImage!));
+                          DataApiCloudStore.updateProfilePicture(
+                              File(customImage!));
                         }
                         Get.back();
                       },

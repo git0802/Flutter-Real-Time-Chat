@@ -52,6 +52,11 @@ dependencies:
   http: ^0.13.5
   flutter_notification_channel: ^2.0.0
   gallery_saver: ^2.3.2
+  flutter_local_notifications: ^8.2.0
+  path_provider: ^2.0.14
+  flutter_cache_manager: ^3.3.0
+  image_gallery_saver: ^1.7.1
+  share_plus: ^4.5.3
 
 
 dev_dependencies:

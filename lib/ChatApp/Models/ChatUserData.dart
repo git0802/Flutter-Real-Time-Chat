@@ -45,4 +45,18 @@ class ChatUser {
     data['phoneNo'] = phoneNo;
     return data;
   }
+
+  void clear() {
+    image = '';
+    about = '';
+    name = '';
+    createdAt = '';
+    isOnline = false;
+    id = '';
+    lastActive = '';
+    pushToken = '';
+    phoneNo = '';
+  }
+
+
 }
