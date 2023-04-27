@@ -19,31 +19,33 @@ This is a Flutter chat app that allows users to send and receive messages, image
 - Flutter SDK
 - Firebase account
 
-## Firebase Authentication
-
-The app uses Firebase Authentication to handle user sign up, sign in, and sign out. To enable Firebase Authentication for your project, follow these steps:
-
-1. Create a new Firebase project in the Firebase console.
-2. Add an Android app or an iOS app to your project.
-3. Follow the setup instructions to download and add the configuration files to your app.
-4. In the Firebase console, navigate to Authentication and enable the sign-in methods you want to use for your app (e.g. email and password, Google Sign-In, Facebook Login).
-
-Once you have enabled Firebase Authentication, you can use the Firebase auth package in your Flutter code to implement authentication logic.
-
-## Firebase Cloud Firestore
-
-The app uses Firebase Cloud Firestore to store messages and user profiles. To enable Cloud Firestore for your project, follow these steps:
-
-1. In the Firebase console, navigate to Firestore and create a new Cloud Firestore database.
-2. Choose the test mode security rules for now.
-3. Create a new collection for storing messages and a new collection for storing user profiles.
-4. Add the necessary read and write rules for your collections.
-
-Once you have set up Cloud Firestore, you can use the Firebase cloud_firestore package in your Flutter code to interact with the database.
-
 ## Additional Features
 
 ### Active Status
 
 The app displays the active status of other users. To implement this feature, you can add a field to your user profiles collection that indicates the user's last active timestamp. You can then use Firebase Cloud Functions to update this field whenever a user opens or closes the app.
+
+### Display Picture
+
+The app allows users to change their display picture. To implement this feature, you can use Firebase Storage to store user profile pictures. You can then use the Firebase storage package in your Flutter code to upload and download profile pictures.
+
+### Edit User Profile
+
+The app allows users to edit their user profiles. To implement this feature, you can use Cloud Firestore to store user profiles and the Firebase cloud_firestore package in your Flutter code to update user profile data.
+
+### View Other User's Profile
+
+The app allows users to view other user's profiles. To implement this feature, you can add a new screen to your app that displays the user's profile picture, name, and any other relevant information.
+
+### Send and Receive Images and Camera Taken Photos
+
+The app allows users to send and receive images and also send and receive images taken from the camera. To implement this feature, you can use Firebase Storage to store the images and the Firebase storage package in your Flutter code to upload and download the images.
+
+You can add a new button to the chat screen that allows the user to select an image from their device or take a photo with the camera. Once the image is selected or taken, you can use the ImagePicker package to get the image file and upload it to Firebase Storage.
+
+To receive images, you can listen to changes in the messages collection and download any image files that are sent as messages. You can then display the images in the chat screen.
+
+## Contributions
+
+Contributions are welcome! If you find any bugs or issues with the app, please submit a GitHub issue or pull request.
 
