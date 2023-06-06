@@ -4,7 +4,7 @@ This is a Flutter chat app that allows users to send and receive messages, image
 
 [DOWNLOAD APPLICATION LINK](https://drive.google.com/file/d/1CkmiMt_MZb0jKUgYmyraX05lNMsh-kce/view?usp=drive_link)
 
-## Features
+## 💫 Features
 
 - User authentication (sign up, sign in, sign out)
 - Real-time messaging with other users
@@ -17,7 +17,7 @@ This is a Flutter chat app that allows users to send and receive messages, image
 - Ability to send and receive images taken from the camera
 
 
-## Additional Features
+## ✨ Additional Features
 
 ### Active Status
 
@@ -45,7 +45,7 @@ This is a Flutter chat app that allows users to send and receive messages, image
 - When new message arrived then showing notification in user mobile.
 
 
-## Contributions
+## 💙 Contributions
 
 Contributions are welcome! If you find any bugs or issues with the app, please submit a GitHub issue or pull request.
 
