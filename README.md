@@ -1,16 +1,49 @@
-# chat_me
+# Chat With Me
 
-A new Flutter project.
+This is a Flutter chat app that allows users to send and receive messages, images, and videos in real-time. The app uses Firebase as a backend service for storing messages and handling user authentication
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- User authentication (sign up, sign in, sign out)
+- Real-time messaging with other users
+- Ability to send text messages, images, and videos
+- Push notifications for new messages
+- Active status of users
+- Ability to change display picture
+- Edit user profile
+- View other user's profile
+- Ability to send and receive images taken from the camera
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Additional Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Active Status
+
+- The app displays the active status of other users.
+
+### Display Picture
+
+- User can set own Display Picture.
+
+### Edit User Profile
+
+- The app allows users to edit their user profiles. 
+- Ex:- users to change their display picture, Name and About.
+
+### View Other User's Profile
+
+- The app allows users to view other user's profiles.
+
+### Send and Receive Images and Camera Taken Photos
+
+- The app allows users to send and receive images and also send and receive images taken from the camera. 
+
+### Notification
+
+- When new message arrived then showing notification in user mobile.
+
+
+## Contributions
+
+Contributions are welcome! If you find any bugs or issues with the app, please submit a GitHub issue or pull request.
+
