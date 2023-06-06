@@ -51,6 +51,7 @@ class DefaultFirebaseOptions {
     authDomain: 'chat-with-me-c61d1.firebaseapp.com',
     databaseURL: 'https://chat-with-me-c61d1-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'chat-with-me-c61d1.appspot.com',
+    measurementId: 'G-CCX7JP8NRJ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
