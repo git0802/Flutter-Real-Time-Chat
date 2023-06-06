@@ -6,7 +6,7 @@ This is a Flutter chat app that allows users to send and receive messages, image
 
 ## 💫 Features ✨
 
-- User authentication (sign up, sign in, sign out) 🔐
+- User authentication by Mobile Number 🔐
 - Real-time messaging with other users 📩📨
 - Ability to send text messages, images, and videos 📝📷🎥
 - Push notifications for new messages 🔔
