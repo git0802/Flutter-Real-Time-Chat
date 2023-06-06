@@ -113,9 +113,15 @@ class DataApiCloudStore {
   //firebase fcm token
   static Future<void> getFirebaseMessagingToken() async {
     await FirebaseMessaging1.requestPermission();
+    Stream<String> fcmStream = FirebaseMessaging1.onTokenRefresh;
+
     await FirebaseMessaging1.getToken().then((value) => {
           if (value != null) {me.pushToken = value, log(value)}
         });
+/*    fcmStream.listen((event) {
+      if (event != null) {me.pushToken = event ; log(event);}
+
+    });*/
   }
 
   //send Notification API
@@ -208,7 +214,7 @@ class DataApiCloudStore {
   static Future<void> getSelfInfo() async {
     user.reload();
     log(user.phoneNumber.toString());
-    me.clear();
+   // me.clear();
     await fireStore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);

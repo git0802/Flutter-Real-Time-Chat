@@ -28,9 +28,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
       DataApiCloudStore.auth.authStateChanges().listen((event) {
         if (event == null) {
-          Get.to(WelcomeScreenView());
+          Get.offAll(WelcomeScreenView());
         } else {
-          Get.to(ChatMainScreenView());
+          Get.offAll(ChatMainScreenView());
         }
       });
 

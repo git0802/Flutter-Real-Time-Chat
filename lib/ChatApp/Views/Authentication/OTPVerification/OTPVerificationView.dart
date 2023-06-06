@@ -23,14 +23,14 @@ class OTPVerificationView extends StatefulWidget {
 class _OTPVerificationViewState extends State<OTPVerificationView> {
   String verificationCode = '';
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
-    selfInfo();
+    // selfInfo();
     verificationCode = '';
   }
 
-  selfInfo() async{
+  selfInfo() async {
     DataApiCloudStore.GetSelfInfo();
     DataApiCloudStore.getSelfInfo();
   }
@@ -117,32 +117,31 @@ class _OTPVerificationViewState extends State<OTPVerificationView> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          DataApiCloudStore
-                              .verifyOTP1(verificationCode,context)
+                          DataApiCloudStore.verifyOTP1(
+                                  verificationCode, context)
                               .then((value) async => {
                                     if (value)
                                       {
                                         if (await DataApiCloudStore
                                             .userExists())
                                           {
-
-                                          Get.to(NamePhotoAddScreen(
-                                            )),
+                                            DataApiCloudStore
+                                                .getFirebaseMessagingToken(),
+                                            Get.to(NamePhotoAddScreen()),
                                           }
                                         else
                                           {
                                             await DataApiCloudStore.createUser()
-                                                .then(
-                                              (value) =>
-                                                  Get.to(NamePhotoAddScreen(
-                                              )),
-                                            )
+                                                .then((value) {
+                                              DataApiCloudStore
+                                                  .getFirebaseMessagingToken();
+
+                                              Get.to(NamePhotoAddScreen());
+                                            })
                                           }
                                       }
                                     else
-                                      {
-
-                                      }
+                                      {}
                                   });
                         },
                         child: Container(
@@ -159,8 +158,48 @@ class _OTPVerificationViewState extends State<OTPVerificationView> {
                         height: Get.height / 10,
                       ),
                       TextButton(
-                          onPressed: () {
-                            Get.to(ChatMainScreenView());
+                          onPressed: () async {
+                            await DataApiCloudStore.phoneAuthnetication(
+                                    '+91${mobileNoVerificationController.phoneNumber.text.trim()}')
+                                .then((value) => {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                                contentPadding: EdgeInsets.zero,
+                                                backgroundColor: Colors.white
+                                                    .withOpacity(.9),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                content: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              10.0),
+                                                      child: Center(
+                                                        child: Text(
+                                                            "Otp Resend Successfully....!!!"),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                        right: 8,
+                                                        top: 6,
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Get.back();
+                                                          },
+                                                          child: Text("Okay"),
+                                                        ))
+                                                  ],
+                                                ),
+                                              ))
+                                    });
+
+                            //  Get.to(ChatMainScreenView());
                           },
                           child: Text(
                             "Resend OTP",

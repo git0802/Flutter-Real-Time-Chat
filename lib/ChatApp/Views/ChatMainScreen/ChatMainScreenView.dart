@@ -339,8 +339,11 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
             builder: (_) => Center(
                   child: CircularProgressIndicator(),
                 ));
-
+        await DataApiCloudStore.fireStore.collection('users').doc(DataApiCloudStore.user.uid).update({
+          'push_token': '',
+        });
         DataApiCloudStore.auth.signOut().then((value) async {
+
           DataApiCloudStore.auth = FirebaseAuth.instance;
           await DefaultCacheManager().emptyCache();
           Get.back();
