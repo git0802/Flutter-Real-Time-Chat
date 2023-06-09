@@ -1,49 +1,48 @@
-# Chat With Me
+# Chat With Me 💬
 
-This is a Flutter chat app that allows users to send and receive messages, images, and videos in real-time. The app uses Firebase as a backend service for storing messages and handling user authentication
+This is a Flutter chat app that allows users to send and receive messages, images, and videos in real-time. The app uses Firebase as a backend service for storing messages and handling user authentication.
 
-## Features
+📥 [Download the Application](https://drive.google.com/file/d/1CkmiMt_MZb0jKUgYmyraX05lNMsh-kce/view?usp=drive_link)
 
-- User authentication (sign up, sign in, sign out)
-- Real-time messaging with other users
-- Ability to send text messages, images, and videos
-- Push notifications for new messages
-- Active status of users
-- Ability to change display picture
-- Edit user profile
-- View other user's profile
-- Ability to send and receive images taken from the camera
+## 💫 Features ✨
 
+- User authentication by Mobile Number 🔐
+- Real-time messaging with other users 📩📨
+- Ability to send text messages, images, and videos 📝📷🎥
+- Push notifications for new messages 🔔
+- Active status of users 🟢
+- Ability to change display picture 🖼️
+- Edit user profile ✏️
+- View other user's profile 👀
+- Ability to send and receive images taken from the camera 📸
 
-## Additional Features
+## ✨ Additional Features ⭐
 
-### Active Status
+### Active Status 👥
 
 - The app displays the active status of other users.
 
-### Display Picture
+### Display Picture 🖼️
 
-- User can set own Display Picture.
+- Users can set their own display picture.
 
-### Edit User Profile
+### Edit User Profile ✏️
 
-- The app allows users to edit their user profiles. 
-- Ex:- users to change their display picture, Name and About.
+- Users can edit their user profiles, including their display picture, name, and about.
 
-### View Other User's Profile
+### View Other User's Profile 👀
 
-- The app allows users to view other user's profiles.
+- Users can view other user's profiles.
 
-### Send and Receive Images and Camera Taken Photos
+### Send and Receive Images and Camera Taken Photos 📷
 
-- The app allows users to send and receive images and also send and receive images taken from the camera. 
+- Users can send and receive images, as well as send and receive images taken from the camera.
 
-### Notification
+### Notification 🔔
 
-- When new message arrived then showing notification in user mobile.
+- Users receive notifications when new messages arrive.
 
+## 💙 Contributions 🤝
 
-## Contributions
-
-Contributions are welcome! If you find any bugs or issues with the app, please submit a GitHub issue or pull request.
+Contributions are welcome! If you find any bugs or issues with the app, please submit a GitHub issue or pull request. 🐛🔧
 
