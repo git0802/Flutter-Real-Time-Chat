@@ -11,7 +11,8 @@ import '../../Utils/NotificationService/NotiicationService.dart';
 import '../../Utils/TextStyleConstant.dart';
 
 class NamePhotoAddScreen extends StatefulWidget {
-  const NamePhotoAddScreen({Key? key/*,required this.user*/}) : super(key: key);
+  const NamePhotoAddScreen({Key? key /*,required this.user*/})
+      : super(key: key);
 /*
 final ChatUser user;
 */
@@ -24,8 +25,7 @@ class _NamePhotoAddScreenState extends State<NamePhotoAddScreen> {
   String? customImage;
   TextEditingController name = TextEditingController();
 
-
- /* setData(){
+  /* setData(){
     setState(() {
       DataApiCloudStore.me;
       name.text = widget.user.name;

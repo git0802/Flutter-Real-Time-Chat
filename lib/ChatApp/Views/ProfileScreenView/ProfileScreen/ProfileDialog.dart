@@ -17,7 +17,7 @@ class ProfileDialog extends StatelessWidget {
       backgroundColor: Colors.white.withOpacity(.9),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: SizedBox(
-        width: Get.width * .6,
+        width: Get.width * .45,
         height: Get.height * .35,
         child: Stack(
           children: [
@@ -27,13 +27,15 @@ class ProfileDialog extends StatelessWidget {
               left: Get.width * .1,
               child: GestureDetector(
                 onTap: () => Get.to(() => ImageView(ImagePath: user.image)),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Get.height * .1),
-                  child: Image.network(
-                    user.image,
-                    width: Get.height * .2,
-                    height: Get.height * .2,
-                    fit: BoxFit.cover,
+                child: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Get.height * .1),
+                    child: Image.network(
+                      user.image,
+                      width: Get.height * .2,
+                      height: Get.height * .2,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

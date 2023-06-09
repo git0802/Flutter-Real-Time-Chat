@@ -22,7 +22,6 @@ void main() async {
     importance: NotificationImportance.IMPORTANCE_HIGH,
     name: 'Chat Me',
   );
-  print(result);
 
   if (DefaultFirebaseOptions.currentPlatform == DefaultFirebaseOptions.web) {
   } else {}

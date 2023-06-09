@@ -7,7 +7,9 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../Controller/DataApi/DataApiCloudStore.dart';
+import '../../Controller/DataApi/DeepLinkingController.dart';
 import '../../Models/ChatUserData.dart';
 import '../ProfileScreenView/ViewProfileScreen/ViewProfileScreen.dart';
 
@@ -24,6 +26,7 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
   TextEditingController messageSend = TextEditingController();
   bool showEmoji = false;
   bool isUploading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +68,28 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                     ),
                     PopupMenuItem<int>(
                       value: 0,
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ViewProfileScreen(
+                                  user: widget.user,
+                                )));
+                      },
                       child: Text(
                         "View Profile",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
+                      onTap: () async {
+                        String generatedDeepLink = await DeepLinkingController.createDynamicLink(true,widget.user.phoneNo);
+                        Share.share('Tap to Chat with ${widget.user.name} \n ${generatedDeepLink}',subject: "Chat With Me App");
+                        print(generatedDeepLink);
+                      },
+                      child: Text(
+                        "Share Contact",
                         style: TextStyle(color: Colors.black),
                       ),
                     ),

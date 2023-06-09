@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 
 import 'AuthenticationRepository.dart';
 
-class MobileNoVerificationController extends GetxController{
+class MobileNoVerificationController extends GetxController {
   TextEditingController phoneNumber = TextEditingController();
   String phoneString = '';
   bool phoneNumberIsEmpty = false;
 
-    final AuthenticationRepository1 = Get.put(AuthenticationRepository());
+  final AuthenticationRepository1 = Get.put(AuthenticationRepository());
 
   bool phoneNumberEmptyFunction() {
     bool results = false;

@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get.dart';
 import '../../Controller/Authentication/AuthenticationRepository.dart';
 import '../../Controller/DataApi/DataApiCloudStore.dart';
+import '../../Controller/DataApi/DeepLinkingController.dart';
 import '../../Models/ChatUserData.dart';
 import '../../Utils/ColorConstant.dart';
 import '../ProfileScreenView/ProfileScreen/ProfileScreenView.dart';
@@ -26,10 +27,12 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
   List<ChatUser> searchList = [];
   bool isSearch = false;
   final AuthenticationRepository1 = Get.put(AuthenticationRepository());
+  final deepLinkingController = Get.put(DeepLinkingController());
   Set<int> selectedIndexes = {};
   Set<String> selectedPhone = {};
 
   bool isSelected = false;
+  DateTime? _lastPressedAt;
 
   @override
   void initState() {
@@ -53,6 +56,13 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    deepLinkingController.initDynamicLink1(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -63,7 +73,29 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
               isSearch = !isSearch;
             });
             return Future.value(false);
+          } else if (selectedIndexes.isNotEmpty) {
+            selectedIndexes.clear();
+            setState(() {
+              isSelected = false;
+            });
+            return Future.value(false);
           } else {
+            final now = DateTime.now();
+            if (_lastPressedAt == null ||
+                now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+              _lastPressedAt = now;
+              Get.rawSnackbar(
+                messageText: const Text(
+                  'Press back again to exit',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                icon: const Icon(CupertinoIcons.back),
+                backgroundColor: Colors.white,
+                snackPosition: SnackPosition.BOTTOM,
+              );
+              return Future.value(false);
+            }
             return Future.value(true);
           }
         },
@@ -72,6 +104,18 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
               ? AppBar(
                   automaticallyImplyLeading: false,
                   centerTitle: false,
+                  leading: isSearch
+                      ? IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isSearch = !isSearch;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                          ))
+                      : null,
                   title: isSearch
                       ? TextField(
                           decoration: InputDecoration(
@@ -185,6 +229,7 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                           setState(() {
                             isSelected = !isSelected;
                           });
+                          selectedPhone = {};
                         },
                         icon: Icon(
                           CupertinoIcons.delete,
@@ -243,22 +288,44 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onLongPress: () {
-                                    setState(() {
-                                      if (selectedIndexes.contains(index)) {
-                                        selectedIndexes.remove(index);
-                                        selectedPhone
-                                            .remove(userList[index].phoneNo);
-                                      } else {
-                                        selectedIndexes.add(index);
-                                        selectedPhone
-                                            .add(userList[index].phoneNo);
-                                      }
-                                      if (selectedIndexes.length != 1) {
-                                        isSelected = false;
-                                      } else {
-                                        isSelected = true;
-                                      }
-                                    });
+                                   if(!isSearch){
+                                     setState(() {
+                                       if (selectedIndexes.contains(index)) {
+                                         selectedIndexes.remove(index);
+                                         selectedPhone
+                                             .remove(userList[index].phoneNo);
+                                       } else {
+                                         selectedIndexes.add(index);
+                                         selectedPhone
+                                             .add(userList[index].phoneNo);
+                                       }
+                                       if (selectedIndexes.length != 1) {
+                                         isSelected = false;
+                                       } else {
+                                         isSelected = true;
+                                       }
+                                     });
+                                   }
+                                  },
+                                  onTap: () {
+                                    if (selectedPhone.length >= 1) {
+                                      setState(() {
+                                        if (selectedIndexes.contains(index)) {
+                                          selectedIndexes.remove(index);
+                                          selectedPhone
+                                              .remove(userList[index].phoneNo);
+                                        } else {
+                                          selectedIndexes.add(index);
+                                          selectedPhone
+                                              .add(userList[index].phoneNo);
+                                        }
+                                        if (selectedIndexes.length != 1) {
+                                          isSelected = false;
+                                        } else {
+                                          isSelected = true;
+                                        }
+                                      });
+                                    }
                                   },
                                   child: ChatCard(
                                       user: isSearch
@@ -285,7 +352,7 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                                       textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.w500)),
                                 ),
@@ -301,7 +368,7 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
                                       textAlign: TextAlign.center,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           ?.copyWith(
                                               fontWeight: FontWeight.w500)),
                                 ),
@@ -339,11 +406,13 @@ class _ChatMainScreenViewState extends State<ChatMainScreenView> {
             builder: (_) => Center(
                   child: CircularProgressIndicator(),
                 ));
-        await DataApiCloudStore.fireStore.collection('users').doc(DataApiCloudStore.user.uid).update({
+        await DataApiCloudStore.fireStore
+            .collection('users')
+            .doc(DataApiCloudStore.user.uid)
+            .update({
           'push_token': '',
         });
         DataApiCloudStore.auth.signOut().then((value) async {
-
           DataApiCloudStore.auth = FirebaseAuth.instance;
           await DefaultCacheManager().emptyCache();
           Get.back();

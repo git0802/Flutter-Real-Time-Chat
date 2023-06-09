@@ -11,14 +11,13 @@ class WelcomeScreenView extends StatefulWidget {
 }
 
 class _WelcomeScreenViewState extends State<WelcomeScreenView> {
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     DataApiCloudStore.auth;
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +25,9 @@ class _WelcomeScreenViewState extends State<WelcomeScreenView> {
           child: Column(
         children: [
           Spacer(flex: 2),
-          Image.asset('Assets/welcome.png',),
+          Image.asset(
+            'Assets/welcome.png',
+          ),
           Spacer(flex: 3),
           Text("Welcome to our freedom \n Messaging App",
               textAlign: TextAlign.center,

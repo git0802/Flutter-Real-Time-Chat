@@ -214,7 +214,7 @@ class DataApiCloudStore {
   static Future<void> getSelfInfo() async {
     user.reload();
     log(user.phoneNumber.toString());
-   // me.clear();
+    // me.clear();
     await fireStore.collection('users').doc(user.uid).get().then((user) async {
       if (user.exists) {
         me = ChatUser.fromJson(user.data()!);

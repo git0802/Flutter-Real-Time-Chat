@@ -7,7 +7,6 @@ import '../../../Controller/DataApi/DataApiCloudStore.dart';
 import '../../../Models/ChatUserData.dart';
 import '../../ImageView/ImageView.dart';
 
-
 class ViewProfileScreen extends StatefulWidget {
   const ViewProfileScreen({Key? key, required this.user}) : super(key: key);
   final ChatUser user;
@@ -25,12 +24,16 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
           //app bar
           appBar: AppBar(
             leading: IconButton(
-              onPressed: (){
+              onPressed: () {
                 Get.back();
               },
-              icon: Icon(CupertinoIcons.back,color: Colors.white,),
+              icon: Icon(
+                CupertinoIcons.back,
+                color: Colors.white,
+              ),
             ),
-            title: Text(widget.user.name),),
+            title: Text(widget.user.name),
+          ),
           floatingActionButton: //user about
               Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -62,8 +65,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
 
                   //user profile picture
                   InkWell(
-                    onTap: ()=> Get.to(() => ImageView(ImagePath:  widget.user.image,)),
-
+                    onTap: () => Get.to(() => ImageView(
+                          ImagePath: widget.user.image,
+                        )),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Get.height * .1),
                       child: Image.network(
@@ -134,8 +138,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                             fontSize: 15),
                       ),
                       StreamBuilder(
-                          stream:
-                          DataApiCloudStore.userStatusStream(widget.user.id),
+                          stream: DataApiCloudStore.userStatusStream(
+                              widget.user.id),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               // Handle error
@@ -147,19 +151,18 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                             String status = isOnline
                                 ? 'Online'
                                 : myDateUtil.getLastActiveTime(
-                                context: context,
-                                lastActive: widget.user.lastActive);
+                                    context: context,
+                                    lastActive: widget.user.lastActive);
                             return Text(
                               status,
-                              style:
-                              TextStyle(fontSize: 13,   color: Colors.black87,
-                                ),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.black87,
+                              ),
                             );
                           })
                     ],
                   ),
-
-
                 ],
               ),
             ),

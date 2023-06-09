@@ -28,6 +28,7 @@ class _MessageCardState extends State<MessageCard> {
       DataApiCloudStore.updateMessageReadStatus(widget.messageModel);
     }
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -75,8 +76,10 @@ class _MessageCardState extends State<MessageCard> {
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : InkWell(
-              onTap: ()=> Get.to(() => ImageView(ImagePath: widget.messageModel.msg,)),
-                  child: ClipRRect(
+                    onTap: () => Get.to(() => ImageView(
+                          ImagePath: widget.messageModel.msg,
+                        )),
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(Get.height * .010),
                       child: Image(
                         loadingBuilder: (context, child, loadingProgress) {
@@ -109,7 +112,7 @@ class _MessageCardState extends State<MessageCard> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                ),
+                  ),
           ),
         ),
         Padding(
@@ -174,8 +177,10 @@ class _MessageCardState extends State<MessageCard> {
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
                   )
                 : InkWell(
-              onTap: ()=> Get.to(() => ImageView(ImagePath: widget.messageModel.msg,)),
-              child: ClipRRect(
+                    onTap: () => Get.to(() => ImageView(
+                          ImagePath: widget.messageModel.msg,
+                        )),
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(Get.height * .010),
                       child: Image(
                         loadingBuilder: (context, child, loadingProgress) {
@@ -208,7 +213,7 @@ class _MessageCardState extends State<MessageCard> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                ),
+                  ),
           ),
         ),
       ],

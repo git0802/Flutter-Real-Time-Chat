@@ -2,8 +2,7 @@ import 'package:chat_me/ChatApp/Controller/Authentication/AuthenticationReposito
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-class SignUpController extends GetxController{
-
+class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
   final AuthenticationRepository1 = Get.put(AuthenticationRepository());
 
@@ -12,7 +11,7 @@ class SignUpController extends GetxController{
   final userPassword = TextEditingController();
   final userMobile = TextEditingController();
 
-  void registerUser(String email,String name,String mobile,String password){
+  void registerUser(String email, String name, String mobile, String password) {
     AuthenticationRepository1.createUserWithEmailAndPassword(email, password);
   }
 }

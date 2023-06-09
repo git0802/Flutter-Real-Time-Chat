@@ -26,13 +26,22 @@ class _ImageViewState extends State<ImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-            color: Colors.grey,
-            image: DecorationImage(
+      body: GestureDetector(
+        child: InteractiveViewer(
+          boundaryMargin: EdgeInsets.all(20.0), // Add margin to the boundary for better zooming experience
+          minScale: 0.5, // Set the minimum scale level
+          maxScale: 4.0, // Set the maximum scale level
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              image: DecorationImage(
                 fit: BoxFit.contain,
                 // image: FileImage(File(widget.ImagePath!))
-                image: NetworkImage(widget.ImagePath!))),
+                image: NetworkImage(widget.ImagePath!),
+              ),
+            ),
+          ),
+        ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 25.0),

@@ -13,7 +13,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../Controller/Authentication/AuthenticationRepository.dart';
 import '../../../Utils/TextStyleConstant.dart';
 
-
 class ProfileScreenView extends StatefulWidget {
   const ProfileScreenView({Key? key, required this.user}) : super(key: key);
   final ChatUser user;

@@ -56,9 +56,10 @@ dependencies:
   path_provider: ^2.0.14
   flutter_cache_manager: ^3.3.0
   image_gallery_saver: ^1.7.1
-  share_plus: ^4.5.3
+  share_plus: ^7.0.2
   firebase_crashlytics: ^3.3.2
   firebase_analytics: ^10.4.2
+  firebase_dynamic_links: ^5.3.2
 
 
 dev_dependencies:

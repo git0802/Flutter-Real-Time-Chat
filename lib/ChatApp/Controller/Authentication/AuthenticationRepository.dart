@@ -17,7 +17,6 @@ class AuthenticationRepository extends GetxController {
   late final Rx<User?> firebaseUser;
   var verificationId1 = ''.obs;
 
-
   static ChatUser me = ChatUser(
       image: '',
       about: '',
@@ -36,8 +35,8 @@ class AuthenticationRepository extends GetxController {
     Firebase.initializeApp();
     verificationId1 = ''.obs;
 
-  //  firebaseUser = Rx<User?>(_auth.currentUser);
-  //  firebaseUser.bindStream(_auth.userChanges());
+    //  firebaseUser = Rx<User?>(_auth.currentUser);
+    //  firebaseUser.bindStream(_auth.userChanges());
     //ever(firebaseUser, (callback) => _setInitialScreen);
   }
 
@@ -90,17 +89,17 @@ class AuthenticationRepository extends GetxController {
       String email, String Password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: Password);
-
     } on FirebaseAuthException catch (e) {
     } catch (e) {}
   }
 
   Future<void> logout() async {
-    await DataApiCloudStore.fireStore.collection('users').doc(DataApiCloudStore.user.uid).update({
+    await DataApiCloudStore.fireStore
+        .collection('users')
+        .doc(DataApiCloudStore.user.uid)
+        .update({
       'push_token': '',
     });
     await FirebaseAuth.instance.signOut();
-
-
   }
 }

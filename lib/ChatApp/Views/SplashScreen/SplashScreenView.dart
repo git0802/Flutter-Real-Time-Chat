@@ -23,9 +23,8 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     navigation();
   }
 
-  navigation(){
+  navigation() {
     Future.delayed(const Duration(seconds: 3), () {
-
       DataApiCloudStore.auth.authStateChanges().listen((event) {
         if (event == null) {
           Get.offAll(WelcomeScreenView());
@@ -33,7 +32,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           Get.offAll(ChatMainScreenView());
         }
       });
-
     });
   }
 
@@ -57,12 +55,13 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               child: AnimatedOpacity(
                 opacity: shouldFade ? 1 : 0,
                 duration: const Duration(seconds: 1),
-          child: Image(
-              height: Get.height / 1.5,
-              width: Get.width / 1.5,
-              image: const AssetImage(
-                'Assets/logo.png',
-              ),),
+                child: Image(
+                  height: Get.height / 1.5,
+                  width: Get.width / 1.5,
+                  image: const AssetImage(
+                    'Assets/logo.png',
+                  ),
+                ),
               ),
             ),
             Center(
