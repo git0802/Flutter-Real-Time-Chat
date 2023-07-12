@@ -1,5 +1,3 @@
-
-
 import 'package:chat_me/ChatApp/Utils/ColorConstant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
