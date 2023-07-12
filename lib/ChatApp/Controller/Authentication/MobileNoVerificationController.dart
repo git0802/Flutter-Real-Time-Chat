@@ -13,7 +13,7 @@ class MobileNoVerificationController extends GetxController {
   bool phoneNumberEmptyFunction() {
     bool results = false;
 
-    if (phoneNumber.text == '' || phoneString == '') {
+    if (phoneNumber.text == '+91' || phoneString == '+91') {
       results = phoneNumberIsEmpty = false;
       update();
     } else {

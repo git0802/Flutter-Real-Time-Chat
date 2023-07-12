@@ -157,8 +157,8 @@ class DataApiCloudStore {
     final chatUser = ChatUser(
       id: user.uid,
       name: auth.currentUser!.displayName.toString(),
-      image:
-          'https://www.pinclipart.com/picdir/big/18-181421_png-transparent-download-person-svg-png-icon-person.png',
+      // image:'https://www.pinclipart.com/picdir/big/18-181421_png-transparent-download-person-svg-png-icon-person.png',\
+      image: 'https://www.pngmart.com/files/10/User-Account-Person-PNG-File.png',
       about: "Hey, I'm using Chat me App",
       createdAt: time,
       isOnline: false,
@@ -397,10 +397,9 @@ class DataApiCloudStore {
   }
 
   static Future<bool> addChatUser(String phoneNo) async {
-    print('+91${phoneNo}');
     final userData = await fireStore
         .collection('users')
-        .where('phoneNo', isEqualTo: '+91${phoneNo}')
+        .where('phoneNo', isEqualTo: '${phoneNo}')
         .get();
 
     if (userData.docs.isNotEmpty && userData.docs.first.id != user.uid) {
