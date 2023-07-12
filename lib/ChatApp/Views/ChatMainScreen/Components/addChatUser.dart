@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../../Controller/DataApi/DataApiCloudStore.dart';
 
@@ -9,6 +8,7 @@ class addChatUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formKey1 = GlobalKey<FormState>();
+
     String phone = '';
     return InkWell(
       onTap: () {
@@ -32,33 +32,51 @@ class addChatUser extends StatelessWidget {
                   ),
                   //content
                   content: Form(
-                      key: formKey1,
-                      child: IntlPhoneField(
-                        decoration: InputDecoration(
-                          hintText: "Ex:-9988774455     \t\t\t",
-                          labelText: 'Enter User Mobile Number ',
-                          labelStyle: TextStyle(color: Colors.black),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                const BorderSide(width: 1, color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          hintStyle: const TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 18),
-                          fillColor: const Color(0xffF5F5F5),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                width: 1, color: Color(0xffCCCCCC)),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
+                    key: formKey1,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      maxLines: null,
+                      onChanged: (value) => phone = value,
+                      decoration: InputDecoration(
+                        prefixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '+91',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.color
+                                          ?.withOpacity(0.64))
+                                  .copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        initialCountryCode: 'IN',
-                        onChanged: (value) {
-                          phone = value.completeNumber;
-                        },
-                      )),
+                        hintText: "Ex:-9988774455     \t\t\t",
+                        labelText: 'Enter User Mobile Number ',
+                        labelStyle: TextStyle(color: Colors.black),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.blue)),
+                      ),
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            value.length != 10) {
+                          return 'Please enter a valid 10 digit phone number';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  //actions
                   actions: [
                     //cancel button
                     MaterialButton(

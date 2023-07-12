@@ -67,7 +67,22 @@ class _ChatMessageScreenViewState extends State<ChatMessageScreenView> {
                       ),
                     ),
                     PopupMenuItem<int>(
-                      value: 1,
+                      value: 0,
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => ViewProfileScreen(
+                                  user: widget.user,
+                                )));
+                      },
+                      child: Text(
+                        "View Profile",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 0,
                       onTap: () async {
                         String generatedDeepLink = await DeepLinkingController.createDynamicLink(true,widget.user.phoneNo);
                         Share.share('Tap to Chat with ${widget.user.name} \n ${generatedDeepLink}',subject: "Chat With Me App");
